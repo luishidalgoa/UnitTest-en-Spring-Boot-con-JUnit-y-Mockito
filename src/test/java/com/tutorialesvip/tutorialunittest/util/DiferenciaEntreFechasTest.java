@@ -10,8 +10,6 @@ import java.time.Period;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DiferenciaEntreFechasTest {
-
-    @Autowired
     DiferenciaEntreFechas diferenciaEntreFechas;
 
     @Test
@@ -19,10 +17,21 @@ class DiferenciaEntreFechasTest {
         diferenciaEntreFechas = new DiferenciaEntreFechas();
         String fechaIndependencia = "27/02/1844";
 
+        // Ejecutar método bajo prueba
         Period resultado = diferenciaEntreFechas.calculateYearsOfIndependency(fechaIndependencia);
 
-        Assertions.assertEquals(2,resultado.getMonths() );
-        Assertions.assertEquals(29,resultado.getDays() );
-        Assertions.assertEquals(176,resultado.getYears() );
+        // Calcular manualmente el valor esperado con la misma lógica que usaría el método
+        LocalDate fechaIndep = LocalDate.of(1844, 2, 27);
+        LocalDate hoy = LocalDate.now();
+        Period esperado = Period.between(fechaIndep, hoy);
+
+        // Validar que el resultado coincide con lo esperado
+        assertEquals(esperado.getYears(), resultado.getYears());
+        assertEquals(esperado.getMonths(), resultado.getMonths());
+        assertEquals(esperado.getDays(), resultado.getDays());
+        System.out.printf("Esperado: %d años, %d meses, %d días%n",
+                esperado.getYears(), esperado.getMonths(), esperado.getDays());
+
     }
+
 }
