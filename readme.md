@@ -55,34 +55,34 @@ Para esto se requiere que **Spring levante el contexto completo**, y se suele us
 
 Crea un mock de una clase o interfaz. No ejecuta lógica real.
 
-****java
+````java
 @Mock
 private CountryRepository countryRepository;
-****
+````
 
 #### `@InjectMocks`
 
 Crea una instancia real de la clase a testear e **inyecta automáticamente los mocks** en su constructor o atributos.
 
-****java
+````java
 @InjectMocks
 private IndependencyController controller;
-****
+````
 
 #### `MockitoAnnotations.openMocks(this)`
 
 Necesario si usas anotaciones `@Mock` y `@InjectMocks` sin `@ExtendWith(MockitoExtension.class)`, para inicializar los mocks.
 
-****java
+````java
 @BeforeEach
 void setUp() {
 MockitoAnnotations.openMocks(this);
 }
-****
+````
 
 #### 🧪 Caso de uso típico
 
-****java
+````java
 @ExtendWith(MockitoExtension.class)
 class IndependencyControllerTest {
 
@@ -102,7 +102,7 @@ class IndependencyControllerTest {
         assertEquals("Republica Dominicana", response.getBody().getCountryName());
     }
 }
-****
+````
 
 ---
 
@@ -126,7 +126,7 @@ Reemplaza un bean real del contexto por un mock. Ideal si quieres que todo Sprin
 
 #### `@Autowired` con `@SpringBootTest` (todo real)
 
-****java
+````java
 @SpringBootTest
 class IndependencyIntegrationTest {
 
@@ -143,11 +143,11 @@ class IndependencyIntegrationTest {
         assertNotNull(response.getBody());
     }
 }
-****
+````
 
 #### `@MockBean` para aislar una capa en integración
 
-****java
+````java
 @SpringBootTest
 class IndependencyControllerPartialMockTest {
 
@@ -164,7 +164,7 @@ class IndependencyControllerPartialMockTest {
         assertEquals("Republica Dominicana", response.getBody().getCountryName());
     }
 }
-****
+````
 
 ---
 
