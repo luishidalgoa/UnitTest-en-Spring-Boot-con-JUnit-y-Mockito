@@ -69,6 +69,29 @@ Crea una instancia real de la clase a testear e **inyecta automáticamente los m
 private IndependencyController controller;
 ````
 
+#### `@ExtendWith(MockitoExtension.class)`
+habilita el uso de anotaciones de Mockito (`@Mock`, `@InjectMocks`, etc.) con JUnit 5 sin necesidad de inicializarlos manualmente con `MockitoAnnotations.openMocks(this)`
+
+
+**Caso de uso típico:**
+````java
+@ExtendWith(MockitoExtension.class)
+class MyServiceTest {
+
+    @Mock
+    private MyRepository myRepository;
+
+    @InjectMocks
+    private MyService myService;
+
+    @Test
+    void testSomething() {
+        when(myRepository.find(...)).thenReturn(...);
+        ...
+    }
+}
+````
+
 #### `MockitoAnnotations.openMocks(this)`
 
 Necesario si usas anotaciones `@Mock` y `@InjectMocks` sin `@ExtendWith(MockitoExtension.class)`, para inicializar los mocks.
