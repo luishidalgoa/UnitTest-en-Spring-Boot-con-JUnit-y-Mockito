@@ -7,12 +7,16 @@ import com.tutorialesvip.tutorialunittest.util.DiferenciaEntreFechas;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;import org.mockito.InjectMocks;import org.mockito.Mock;import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 
-@ExtendWith(MockitoExtension.class) // Esto se usa por que no estamos usando JUnit 5, solamente Mockito con las anotaciones @Mock e @InjectMocks
+@ExtendWith(MockitoExtension.class) // Activa soporte de Mockito para inyectar @Mock y @InjectMocks con JUnit 5
 class IndependencyControllerTest {
 
     @Mock
@@ -25,23 +29,24 @@ class IndependencyControllerTest {
     @BeforeEach
     void setUp() {
         {
-        // Otra forma de hacer un mock de dependencias
-        //CountryRepository countryRepositoryMock = Mockito.mock(CountryRepository.class);
-        //independencyController = new IndependencyController(countryRepositoryMock);
+            // Otra forma de hacer un mock de dependencias
+            //CountryRepository countryRepositoryMock = Mockito.mock(CountryRepository.class);
+            //independencyController = new IndependencyController(countryRepositoryMock);
         }
-
-        Country mockCountry = new Country();
-        mockCountry.setIsoCode("DO");
-        mockCountry.setCountryIdependenceDate("27/02/1844");
-        mockCountry.setCountryId(1L);
-        mockCountry.setCountryName("Republica Dominicana");
-        mockCountry.setCountryCapital("Santo Domingo");
-
-        Mockito.when(countryRepositoryMock.findCountryByIsoCode("DO")).thenReturn(mockCountry);
     }
 
     @Test
     void getCountryDetailsWithValidCountryCode() {
+        {
+            Country mockCountry = new Country();
+            mockCountry.setIsoCode("DO");
+            mockCountry.setCountryIdependenceDate("27/02/1844");
+            mockCountry.setCountryId(1L);
+            mockCountry.setCountryName("Republica Dominicana");
+            mockCountry.setCountryCapital("Santo Domingo");
+            Mockito.when(countryRepositoryMock.findCountryByIsoCode("DO")).thenReturn(mockCountry);
+        }
+
         ResponseEntity<CountryResponse> response = independencyController.getCountryDetails("DO");
 
         Assertions.assertNotNull(response.getBody());
@@ -50,6 +55,7 @@ class IndependencyControllerTest {
 
     @Test
     void getCountryDetailsWithInvalidCountryCode() {
+        Mockito.when(countryRepositoryMock.findCountryByIsoCode("IT")).thenReturn(null);
         ResponseEntity<CountryResponse> response = independencyController.getCountryDetails("IT");
 
         Assertions.assertNull(response.getBody());
