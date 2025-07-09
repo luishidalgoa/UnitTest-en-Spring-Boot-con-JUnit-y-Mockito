@@ -6,10 +6,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
-@Component
 public class DiferenciaEntreFechas {
 
-    public Period calculateYearsOfIndependency(String independenceDay) {
+    public static Period calculateYearsOfIndependency(String independenceDay) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 
         LocalDate localDate = LocalDate.parse(independenceDay, formatter);

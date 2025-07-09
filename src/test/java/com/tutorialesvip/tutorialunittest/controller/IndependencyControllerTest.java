@@ -7,20 +7,24 @@ import com.tutorialesvip.tutorialunittest.util.DiferenciaEntreFechas;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 
 class IndependencyControllerTest {
 
     private IndependencyController independencyController;
 
+    @MockBean
+    CountryRepository countryRepositoryMock;
+
     @BeforeEach
     void setUp() {
-        CountryRepository countryRepositoryMock = Mockito.mock(CountryRepository.class);
-        DiferenciaEntreFechas diferenciaEntreFechasMock = Mockito.mock(DiferenciaEntreFechas.class);
+        // Otra forma de hacer un mock de dependencias
+        //CountryRepository countryRepositoryMock = Mockito.mock(CountryRepository.class);
 
-        independencyController = new IndependencyController(countryRepositoryMock, diferenciaEntreFechasMock);
+        independencyController = new IndependencyController(countryRepositoryMock);
 
         Country mockCountry = new Country();
         mockCountry.setIsoCode("DO");
@@ -44,6 +48,6 @@ class IndependencyControllerTest {
     void getCountryDetailsWithInvalidCountryCode() {
         ResponseEntity<CountryResponse> response = independencyController.getCountryDetails("IT");
 
-        Assertions.assertNull(response.getBody().getCountryName());
+        Assertions.assertNull(response.getBody());
     }
 }

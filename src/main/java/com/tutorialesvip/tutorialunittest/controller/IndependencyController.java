@@ -13,39 +13,25 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Period;
 import java.util.Optional;
 
-/**
- * Author: VIP
- */
 @RestController()
 public class IndependencyController {
     private final CountryRepository countryRepository;
-    private final DiferenciaEntreFechas diferenciaEntreFechas;
 
     @Autowired
-    public IndependencyController(CountryRepository countryRepository, DiferenciaEntreFechas diferenciaEntreFechas) {
+    public IndependencyController(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
-        this.diferenciaEntreFechas = diferenciaEntreFechas;
     }
 
     @GetMapping(path = "/country/{countryId}")
     public ResponseEntity<CountryResponse> getCountryDetails(@PathVariable("countryId") String countryId) {
-        CountryResponse countryResponse = new CountryResponse();
 
         Optional<Country> country = Optional.ofNullable(countryRepository.findCountryByIsoCode(countryId.toUpperCase()));
 
         if (!country.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        // Si el país existe, calculamos la diferencia de años de independencia
-        {
-            Period period = diferenciaEntreFechas.calculateYearsOfIndependency(country.get().getCountryIdependenceDate());
-            countryResponse.setCountryName(country.get().getCountryName());
-            countryResponse.setCapitalName(country.get().getCountryCapital());
-            countryResponse.setIndependenceDate(country.get().getCountryIdependenceDate());
-            countryResponse.setDayssOfIndependency(period.getDays());
-            countryResponse.setMonthsOfIndependency(period.getMonths());
-            countryResponse.setYearsOfIndependency(period.getYears());
-        }
+
+        CountryResponse countryResponse = new CountryResponse(country.get());
         return ResponseEntity.ok(countryResponse);
     }
 }

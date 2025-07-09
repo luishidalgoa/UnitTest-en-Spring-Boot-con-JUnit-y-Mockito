@@ -1,12 +1,22 @@
 package com.tutorialesvip.tutorialunittest.models;
 
-public class CountryResponse {
+import com.tutorialesvip.tutorialunittest.util.DiferenciaEntreFechas;import java.time.Period;public class CountryResponse {
     private String countryName;
     private String capitalName;
     private String independenceDate;
     private int yearsOfIndependency;
     private int monthsOfIndependency;
     private int dayssOfIndependency;
+
+    public CountryResponse(Country country) {
+        countryName = country.getCountryName();
+        capitalName = country.getCountryCapital();
+        independenceDate = country.getCountryIdependenceDate();
+        Period period = DiferenciaEntreFechas.calculateYearsOfIndependency(country.getCountryIdependenceDate());
+        yearsOfIndependency = period.getYears();
+        monthsOfIndependency = period.getMonths();
+        dayssOfIndependency = period.getDays();
+    }
 
     public String getCountryName() {
         return countryName;
