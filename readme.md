@@ -143,7 +143,29 @@ Inyecta beans reales del contexto de Spring, como si estuvieras en una clase del
 
 Reemplaza un bean real del contexto por un mock. Ideal si quieres que todo Spring funcione pero **controlar una dependencia concreta**.
 
+#### `@DataJpaTest`
+Está enfocado a tests en JPA/Hibernate, donde solo queremos comprobar que la creación de las tablas y relaciones son correctas
+Levanta un contexto minimo con solo las capas necesarias para probar JPA, sin levantar todo el contexto de Spring Boot, lo cual lo hace más rápido de ejecutar
+
+> 👁️ Nota: Esta anotación sustituye la base de datos real por una en memoria (como H2) para pruebas rápidas. Si deseas usar la anotación complementaria `@AutoConfigureTestDatabase` puedes configurarla para usar una base de datos real o una en memoria.
+#### `@AutoConfigureTestDatabase`
+Permite configurar el tipo de base de datos que se usará en los tests, ya sea una base de datos en memoria (como H2) o una base de datos real.
+
+```java
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Usa la bbdd real configurada.
+class example{}
+````
+
+| Valor  | Qué hace                                                                                                                         |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `ANY`  | **(Por defecto)** Reemplaza cualquier fuente de datos (base real o en memoria) por una base de datos en memoria durante el test. |
+| `AUTO` | Reemplaza solo si hay una base de datos real configurada, por una base en memoria. Similar a `ANY`, pero con lógica más fina.    |
+| `NONE` | **No reemplaza nada.** Usa la base de datos configurada en el proyecto (real o la que tengas en `application.properties`).       |
+
+
 ---
+
 
 ### 🧩 Casos de uso reales
 
@@ -189,6 +211,25 @@ class IndependencyControllerPartialMockTest {
 }
 ````
 
+#### `@DataJpaTest` para pruebas de JPA
+
+````java
+@DataJpaTest
+class CountryRepositoryTest {
+    @Autowired
+    private CountryRepository countryRepository;
+
+    @Test
+    void shouldSaveAndFindCountry() {
+        Country country = new Country("DO", "Republica Dominicana");
+        countryRepository.save(country);
+        Optional<Country> found = countryRepository.findById("DO");
+        assertTrue(found.isPresent());
+        assertEquals("Republica Dominicana", found.get().getName());
+    }
+}
+````
+> También puede ser útil para testear modelos de dominio
 ---
 
 ## 🔍 Diferencias clave entre `@Mock`, `@MockBean` y `@Autowired`
